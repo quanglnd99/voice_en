@@ -136,6 +136,16 @@
       transform: scale(1.05);
     }
     
+    .action-button {
+      background-color: #34495e;
+      color: white;
+    }
+    
+    .action-button:hover {
+      background-color: #2c3e50;
+      transform: scale(1.05);
+    }
+    
     .last-played {
       margin-top: 20px;
       padding: 15px;
@@ -286,7 +296,11 @@
         'cửa sổ': 'Window',
         'xoay tròn': 'xoaytron',
         'show chân': 'showchan',
-        'i am fine': 'Imfine'
+        'i am fine': 'Imfine',
+        
+        // Action buttons
+        'next': 'Next',
+        'xóa': 'Xóa'
       };
       
       // Popup functionality
@@ -331,6 +345,23 @@
         button.onclick = function() {
           playSound(punct.sound);
           showPopup(punct.display);
+        };
+        alphabetGrid.appendChild(button);
+      });
+      
+      // Thêm nút Next và Xóa vào bảng chữ cái
+      const actionButtons = [
+        { display: 'Next', sound: 'Next', class: 'action-button' },
+        { display: 'Xóa', sound: 'Xóa', class: 'action-button' }
+      ];
+      
+      actionButtons.forEach(action => {
+        const button = document.createElement('button');
+        button.textContent = action.display;
+        button.className = action.class;
+        button.onclick = function() {
+          playSound(action.sound);
+          showPopup(action.display);
         };
         alphabetGrid.appendChild(button);
       });
