@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ứng Dụng Đọc Chữ Cái</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 800px;
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+    
+    .section-title {
+      color: #3498db;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 8px;
+      margin-bottom: 15px;
+    }
+    
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .numbers-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .punctuation-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .special-buttons {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    
+    button {
+      padding: 15px 10px;
+      font-size: 18px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      min-height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .letter-button {
+      background-color: #3498db;
+      color: white;
+    }
+    
+    .letter-button:hover {
+      background-color: #2980b9;
+      transform: scale(1.05);
+    }
+    
+    .number-button {
+      background-color: #9b59b6;
+      color: white;
+    }
+    
+    .number-button:hover {
+      background-color: #8e44ad;
+      transform: scale(1.05);
+    }
+    
+    .punctuation-button {
+      background-color: #2ecc71;
+      color: white;
+      font-size: 24px;
+    }
+    
+    .punctuation-button:hover {
+      background-color: #27ae60;
+      transform: scale(1.05);
+    }
+    
+    .space-button {
+      font-size: 16px;
+    }
+    
+    .special-button {
+      background-color: #e74c3c;
+      color: white;
+    }
+    
+    .special-button:hover {
+      background-color: #c0392b;
+      transform: scale(1.05);
+    }
+    
+    .last-played {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+      text-align: center;
+    }
+    
+    @media (max-width: 600px) {
+      .button-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      
+      .numbers-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      
+      .special-buttons {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Ứng Dụng Đọc Chữ Cái</h1>
+  
+  <div class="container">
+    <h2 class="section-title">Bảng Chữ Cái Tiếng Anh</h2>
+    <div class="button-grid" id="alphabetGrid"></div>
+    
+    <h2 class="section-title">Số</h2>
+    <div class="numbers-grid" id="numbersGrid"></div>
+    
+    <h2 class="section-title">Dấu Câu</h2>
+    <div class="punctuation-grid" id="punctuationGrid"></div>
+    
+    <h2 class="section-title">Từ Đặc Biệt</h2>
+    <div class="special-buttons" id="specialButtons"></div>
+    
+    <div class="last-played">
+      <h3>Âm thanh vừa phát:</h3>
+      <p id="lastPlayed">Chưa có âm thanh nào được phát</p>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Tạo bản đồ tên file âm thanh
+      const soundFiles = {
+        // Chữ cái
+        'a': 'A',
+        'b': 'B',
+        'c': 'C',
+        'd': 'D',
+        'e': 'E',
+        'f': 'F',
+        'g': 'G',
+        'h': 'H',
+        'i': 'I',
+        'j': 'J',
+        'k': 'K',
+        'l': 'L',
+        'm': 'M',
+        'n': 'N',
+        'o': 'O',
+        'p': 'P',
+        'q': 'Q',
+        'r': 'R',
+        's': 'S',
+        't': 'T',
+        'u': 'U',
+        'v': 'V',
+        'w': 'W',
+        'x': 'X',
+        'y': 'Y',
+        'z': 'Z',
+        
+        // Số từ 0-9
+        '1': 'One',
+        '2': 'Two',
+        
+        // Dấu câu
+        ',': 'phay',
+        ' ': 'space',
+        
+        // Từ đặc biệt
+        'gần vào': 'ganvao',
+        'lùi xa': 'luixa',
+        'quay video': 'quayvideo',
+        'phải': 'right',
+        'trái': 'left',
+        'cảm ơn': 'Thankiu',
+        'yes': 'Yes',
+        'oke': 'Ok',
+        'lên': 'up',
+        'cccd': 'CCCD',
+        'bằng tay': 'Byhand',
+        'camera trước': 'frontcam',
+        'lấy điện thoại': 'getaphone'
+      };
+      
+      // Tạo các nút cho bảng chữ cái
+      const alphabetGrid = document.getElementById('alphabetGrid');
+      const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+      
+      alphabet.forEach(letter => {
+        const button = document.createElement('button');
+        button.textContent = letter.toUpperCase();
+        button.className = 'letter-button';
+        button.onclick = function() {
+          playSound(soundFiles[letter]);
+        };
+        alphabetGrid.appendChild(button);
+      });
+      
+      // Tạo các nút cho số
+      const numbersGrid = document.getElementById('numbersGrid');
+      const numbers = [
+        { display: '1', sound: 'One' },
+        { display: '2', sound: 'Two' }
+      ];
+      
+      numbers.forEach(number => {
+        const button = document.createElement('button');
+        button.textContent = number.display;
+        button.className = 'number-button';
+        button.onclick = function() {
+          playSound(number.sound);
+        };
+        numbersGrid.appendChild(button);
+      });
+      
+      // Tạo các nút cho dấu câu
+      const punctuationGrid = document.getElementById('punctuationGrid');
+      const punctuations = [
+        { display: ',', sound: 'phay' },
+        { display: 'Space', sound: 'space', class: 'space-button' }
+      ];
+      
+      punctuations.forEach(punct => {
+        const button = document.createElement('button');
+        button.textContent = punct.display;
+        button.className = `punctuation-button ${punct.class || ''}`;
+        button.onclick = function() {
+          playSound(punct.sound);
+        };
+        punctuationGrid.appendChild(button);
+      });
+      
+      // Tạo các nút cho từ đặc biệt
+      const specialButtons = document.getElementById('specialButtons');
+      const specialWords = [
+        { display: 'Gần vào', sound: 'ganvao' },
+        { display: 'Lùi xa', sound: 'luixa' },
+        { display: 'Quay video', sound: 'quayvideo' },
+        { display: 'Phải', sound: 'right' },
+        { display: 'Trái', sound: 'left' },
+        { display: 'Cảm ơn', sound: 'Thankiu' },
+        { display: 'Yes', sound: 'Yes' },
+        { display: 'Ok', sound: 'Ok' },
+        { display: 'Lên', sound: 'up' },
+        { display: 'CCCD', sound: 'CCCD' },
+        { display: 'Bằng tay', sound: 'Byhand' },
+        { display: 'Camera trước', sound: 'frontcam' },
+        { display: 'Lấy điện thoại', sound: 'getaphone' }
+      ];
+      
+      specialWords.forEach(word => {
+        const button = document.createElement('button');
+        button.textContent = word.display;
+        button.className = 'special-button';
+        button.onclick = function() {
+          playSound(word.sound);
+        };
+        specialButtons.appendChild(button);
+      });
+      
+      // Hàm phát âm thanh
+      function playSound(soundFile) {
+        if (!soundFile) return;
+        
+        const audio = new Audio(`${soundFile}.m4a`);
+        
+        audio.onplay = function() {
+          document.getElementById('lastPlayed').textContent = soundFile;
+        };
+        
+        audio.onerror = function() {
+          console.error(`Không thể phát file âm thanh: ${soundFile}.m4a`);
+          document.getElementById('lastPlayed').textContent = `Đang chờ file: ${soundFile}.m4a`;
+        };
+        
+        audio.play().catch(error => {
+          console.error('Lỗi phát âm thanh:', error);
+          document.getElementById('lastPlayed').textContent = `Đang chờ file: ${soundFile}.m4a`;
+        });
+      }
+    });
+  </script>
+</body>
+</html>
